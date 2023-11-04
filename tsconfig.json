@@ -52,7 +52,6 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".storybook/*.ts",
     ".next/types/**/*.ts",
     "src/libs/Env.mjs"
   ]

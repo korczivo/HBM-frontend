@@ -52,3 +52,5 @@ local
 
 # vercel
 .vercel
+
+/.idea
