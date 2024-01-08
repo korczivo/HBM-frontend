@@ -8,7 +8,7 @@ interface IMainProps {
 const Main = (props: IMainProps) => (
   <div>
     {props.meta}
-    <main className="content py-5 text-xl">{props.children}</main>
+    <main className="content p-2 text-xl">{props.children}</main>
   </div>
 );
 

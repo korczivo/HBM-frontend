@@ -54,3 +54,5 @@ local
 .vercel
 
 /.idea
+
+mydb.sqlite

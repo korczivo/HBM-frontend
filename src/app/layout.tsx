@@ -18,13 +18,18 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="night">
       <body>
-        <div className="flex h-screen bg-gray-100">
+        <div className="flex min-h-screen bg-gray-100">
           <aside
             className={`${
               isSidebarOpen ? 'w-64' : 'w-16'
             } relative min-h-screen bg-base-100 p-4 text-white transition-all`}
           >
-            {isSidebarOpen && <div className="mt-10">sidebar</div>}
+            {isSidebarOpen && (
+              <div className="mt-10">
+                <a href="/">Home</a>
+                <a href="/add-expense">Add expenses</a>
+              </div>
+            )}
             <button
               type="button"
               className={`${
@@ -65,8 +70,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-// Enable edge runtime but you are required to disable the `migrate` function in `src/libs/DB.ts`
-// Unfortunately, this also means it will also disable the automatic migration of the database
-// And, you will have to manually migrate it with `npm run db:push`
-// export const runtime = 'edge';
