@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
-import { AddExpenseForm } from '@/components/AddExpenseForm';
-import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
+import { AddExpenseForm } from '@/views/AddExpenseForm';
+import Breadcrumb from '@/views/Breadcrumbs/Breadcrumb';
 
 export const metadata: Metadata = {
   title: 'Add expense - HMB',

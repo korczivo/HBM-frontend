@@ -1,6 +1,6 @@
 import type { BRAND } from '@/types/brand';
-import DropdownDefault from '@/components/Dropdowns/DropdownDefault';
-import {Dropdown} from "@/components/Dropdown/Dropdown";
+import DropdownDefault from '@/views/Dropdowns/DropdownDefault';
+import {Dropdown} from "@/views/Dropdown/Dropdown";
 
 const brandData: BRAND[] = [
   {

@@ -4,7 +4,7 @@ import { type ChangeEvent, useEffect, useState } from 'react';
 
 import { convertCSVToJson } from '@/app/lib/csvConverter';
 import type { Expense } from '@/types/expense';
-import { ExpensesTable } from '@/components/ExpensesTable';
+import { ExpensesTable } from '@/views/ExpensesTable';
 
 export const AddExpenseForm = () => {
   const [expenses, setExpenses] = useState<Array<Expense>>([]);
