@@ -1,12 +1,15 @@
-"use client";
-import "./globals.css";
-import "./data-tables-css.css";
-import "./satoshi.css";
-import { useState, useEffect } from "react";
-import Loader from "@/views/common/Loader";
+'use client';
 
-import Sidebar from "@/views/Sidebar";
-import Header from "@/views/Header";
+import './globals.css';
+import './data-tables-css.css';
+import './satoshi.css';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+
+import Header from '@/views/Header';
+import Sidebar from '@/views/Sidebar';
 
 export default function RootLayout({
   children,
@@ -15,47 +18,38 @@ export default function RootLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
-  }, []);
-
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true}>
+      <body suppressHydrationWarning>
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
-          {loading ? (
-            <Loader />
-          ) : (
-            <div className="flex h-screen overflow-hidden">
-              {/* <!-- ===== Sidebar Start ===== --> */}
-              <Sidebar
+          <div className="flex h-screen overflow-hidden">
+            {/* <!-- ===== Sidebar Start ===== --> */}
+            <Sidebar
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+            {/* <!-- ===== Sidebar End ===== --> */}
+
+            {/* <!-- ===== Content Area Start ===== --> */}
+            <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+              {/* <!-- ===== Header Start ===== --> */}
+              <Header
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpen}
               />
-              {/* <!-- ===== Sidebar End ===== --> */}
+              {/* <!-- ===== Header End ===== --> */}
 
-              {/* <!-- ===== Content Area Start ===== --> */}
-              <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
-                {/* <!-- ===== Header Start ===== --> */}
-                <Header
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-                {/* <!-- ===== Header End ===== --> */}
-
-                {/* <!-- ===== Main Content Start ===== --> */}
-                <main>
-                  <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
-                    {children}
-                  </div>
-                </main>
-                {/* <!-- ===== Main Content End ===== --> */}
-              </div>
-              {/* <!-- ===== Content Area End ===== --> */}
+              {/* <!-- ===== Main Content Start ===== --> */}
+              <main>
+                <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+                  <ToastContainer position="bottom-center" autoClose={3000} />
+                  {children}
+                </div>
+              </main>
+              {/* <!-- ===== Main Content End ===== --> */}
             </div>
-          )}
+            {/* <!-- ===== Content Area End ===== --> */}
+          </div>
         </div>
       </body>
     </html>

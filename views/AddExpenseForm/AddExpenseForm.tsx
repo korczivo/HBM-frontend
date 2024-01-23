@@ -1,13 +1,33 @@
 'use client';
 
-import { type ChangeEvent, useEffect, useState } from 'react';
+import { ErrorMessage } from '@hookform/error-message';
+import { useRouter } from 'next/navigation';
+import type { ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
+import { createExpenses } from '@/app/lib/api-client/expenses';
 import { convertCSVToJson } from '@/app/lib/csvConverter';
 import type { Expense } from '@/types/expense';
+import { SpendCategory } from '@/types/expense';
 import { ExpensesTable } from '@/views/ExpensesTable';
 
+type FormProps = {
+  csvFile: File;
+};
 export const AddExpenseForm = () => {
+  const router = useRouter();
   const [expenses, setExpenses] = useState<Array<Expense>>([]);
+  const [noCategoryExpenses, setNoCategoryExpenses] = useState<boolean>(false);
+  const [isFormLoading, setIsFormLoading] = useState<boolean>(false);
+
+  const {
+    register,
+    handleSubmit,
+    clearErrors,
+    formState: { errors },
+  } = useForm<FormProps>();
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -26,6 +46,7 @@ export const AddExpenseForm = () => {
         id: item['Numer referencyjny'] ?? '',
       }));
       setExpenses(mapNewStructure);
+      clearErrors();
     };
 
     reader.readAsText(file);
@@ -43,28 +64,31 @@ export const AddExpenseForm = () => {
     });
   };
 
-  const handleSave = async () => {
-    await fetch('/api/expense', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(expenses),
-    }).then((res) => console.log(res));
+  const onSubmit = async () => {
+    setIsFormLoading(true);
+    try {
+      const response = await createExpenses(expenses);
+      if (response) {
+        router.push('/expenses');
+        toast.success('Expenses saved successfully.');
+      }
+    } catch (error) {
+      toast.error('An error occurred while saving expenses.');
+    } finally {
+      setIsFormLoading(false);
+    }
   };
 
   useEffect(() => {
-    fetch('/api/expense')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error('There was a problem with your fetch operation:', error);
-      });
+    const hasSomeUncategorizedExpenses = expenses.some(
+      (expense) => expense.category === SpendCategory.Uncategorized,
+    );
+
+    if (hasSomeUncategorizedExpenses) {
+      setNoCategoryExpenses(true);
+    } else {
+      setNoCategoryExpenses(false);
+    }
   }, [expenses]);
 
   return (
@@ -79,7 +103,7 @@ export const AddExpenseForm = () => {
 
           <div className="flex flex-col gap-5.5 p-6.5">
             <div>
-              <form>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <label
                   className="mb-3 block text-black dark:text-white"
                   htmlFor="attachFile"
@@ -88,15 +112,27 @@ export const AddExpenseForm = () => {
                   <input
                     type="file"
                     id="attachFile"
+                    {...register('csvFile', {
+                      required: 'Please upload file.',
+                    })}
                     onChange={handleInputChange}
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
+                  <div className="text-danger">
+                    <ErrorMessage errors={errors} name="csvFile" />
+                  </div>
                 </label>
 
+                {noCategoryExpenses ? (
+                  <div className="mb-4">
+                    <span className="text-danger">Select categories</span>
+                  </div>
+                ) : null}
+
                 <button
-                  type="button"
-                  className="mt-6 inline-flex items-center justify-center rounded-md border border-primary px-10 py-4 text-center font-medium text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
-                  onClick={() => handleSave()}
+                  type="submit"
+                  disabled={noCategoryExpenses || isFormLoading}
+                  className="inline-flex items-center justify-center rounded-md border border-primary px-10 py-4 text-center font-medium text-primary hover:bg-primary/20 disabled:border-graydark disabled:bg-whiter disabled:text-graydark lg:px-8 xl:px-10"
                 >
                   Save
                 </button>
@@ -105,7 +141,12 @@ export const AddExpenseForm = () => {
           </div>
         </div>
       </div>
-      <ExpensesTable />
+      {expenses.length ? (
+        <ExpensesTable
+          handleUpdateExpense={handleUpdateExpense}
+          expenses={expenses}
+        />
+      ) : null}
     </div>
   );
 };
