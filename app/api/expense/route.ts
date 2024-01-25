@@ -1,10 +1,33 @@
-import type { NextApiRequest } from 'next';
-
 import { initializeDatabase } from '@/app/lib/database';
+import { formatDate } from '@/app/lib/helpers';
 
-export async function GET() {
+export async function GET(request: Request): Promise<Response> {
   const db = await initializeDatabase();
-  const expenses = await db.all('SELECT * FROM expenses');
+  const { searchParams } = new URL(request.url);
+
+  const startDate = searchParams.has('startDate')
+    ? formatDate(searchParams.get('startDate'))
+    : null;
+
+  const endDate = searchParams.has('endDate')
+    ? formatDate(searchParams.get('endDate'))
+    : null;
+
+  let query = 'SELECT * FROM expenses';
+  const params = [];
+
+  if (startDate && endDate) {
+    query += ' WHERE postingDate >= ? AND postingDate <= ?';
+    params.push(startDate, endDate);
+  } else if (startDate) {
+    query += ' WHERE postingDate >= ?';
+    params.push(startDate);
+  } else if (endDate) {
+    query += ' WHERE postingDate <= ?';
+    params.push(endDate);
+  }
+
+  const expenses = await db.all(query, ...params);
 
   return new Response(JSON.stringify(expenses), {
     status: 200,
@@ -14,11 +37,10 @@ export async function GET() {
   });
 }
 
-export async function POST(req: NextApiRequest) {
+export async function POST(req: Request) {
   const db = await initializeDatabase();
-  const expenses = await req.json(); // Expecting an array of Expense objects
+  const expenses = await req.json();
 
-  // Start a transaction to ensure all inserts are processed together
   await db.exec('BEGIN TRANSACTION');
 
   try {
@@ -31,7 +53,6 @@ export async function POST(req: NextApiRequest) {
       );
     }
 
-    // Commit the transaction after successfully inserting all expenses
     await db.exec('COMMIT');
 
     return new Response(
@@ -44,11 +65,9 @@ export async function POST(req: NextApiRequest) {
       },
     );
   } catch (error) {
-    // Rollback the transaction in case of an error
     await db.exec('ROLLBACK');
 
-    // Return an error response
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 500,
       headers: {
         'Content-Type': 'application/json',

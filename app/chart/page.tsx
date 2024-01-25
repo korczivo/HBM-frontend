@@ -1,12 +1,14 @@
-import Breadcrumb from "@/views/Breadcrumbs/Breadcrumb";
-import ChartFour from "@/views/Charts/ChartFour";
-import ChartOne from "@/views/Charts/ChartOne";
-import ChartThree from "@/views/Charts/ChartThree";
-import ChartTwo from "@/views/Charts/ChartTwo";
-import { Metadata } from "next";
+import type { Metadata } from 'next';
+
+import Breadcrumb from '@/views/Breadcrumbs/Breadcrumb';
+import ChartFour from '@/views/Charts/ChartFour';
+import ChartOne from '@/views/Charts/ChartOne';
+import ChartThree from '@/views/Charts/ChartThree';
+import ChartTwo from '@/views/Charts/ChartTwo';
+
 export const metadata: Metadata = {
-  title: "Chart Page | Next.js E-commerce Dashboard Template",
-  description: "This is Chart Page for TailAdmin Next.js",
+  title: 'Chart Page | Next.js E-commerce Dashboard Template',
+  description: 'This is Chart Page for TailAdmin Next.js',
   // other metadata
 };
 

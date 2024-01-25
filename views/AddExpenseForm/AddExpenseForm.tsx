@@ -6,7 +6,9 @@ import type { ChangeEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { mutate } from 'swr';
 
+import { CacheKeys } from '@/app/lib/api-client/cache';
 import { createExpenses } from '@/app/lib/api-client/expenses';
 import { convertCSVToJson } from '@/app/lib/csvConverter';
 import type { Expense } from '@/types/expense';
@@ -69,6 +71,7 @@ export const AddExpenseForm = () => {
     try {
       const response = await createExpenses(expenses);
       if (response) {
+        await mutate(CacheKeys.GET_EXPENSES);
         router.push('/expenses');
         toast.success('Expenses saved successfully.');
       }
