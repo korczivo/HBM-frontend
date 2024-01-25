@@ -1,11 +1,13 @@
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import Breadcrumb from "@/views/Breadcrumbs/Breadcrumb";
-import { Metadata } from "next";
+import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+
+import Breadcrumb from '@/views/Breadcrumbs/Breadcrumb';
+
 export const metadata: Metadata = {
-  title: "Signup Page | Next.js E-commerce Dashboard Template",
-  description: "This is Signup page for TailAdmin Next.js",
+  title: 'Signup Page | Next.js E-commerce Dashboard Template',
+  description: 'This is Signup page for TailAdmin Next.js',
   // other metadata
 };
 
@@ -17,18 +19,18 @@ const SignUp: React.FC = () => {
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
-            <div className="py-17.5 px-26 text-center">
+            <div className="px-26 py-17.5 text-center">
               <Link className="mb-5.5 inline-block" href="/">
                 <Image
                   className="hidden dark:block"
-                  src={"/images/logo/logo.svg"}
+                  src="/images/logo/logo.svg"
                   alt="Logo"
                   width={176}
                   height={32}
                 />
                 <Image
                   className="dark:hidden"
-                  src={"/images/logo/logo-dark.svg"}
+                  src="/images/logo/logo-dark.svg"
                   alt="Logo"
                   width={176}
                   height={32}
@@ -355,7 +357,7 @@ const SignUp: React.FC = () => {
 
                 <div className="mt-6 text-center">
                   <p>
-                    Already have an account?{" "}
+                    Already have an account?{' '}
                     <Link href="/auth/signin" className="text-primary">
                       Sign in
                     </Link>
