@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
+import TableOne from '@/views/_boilerplate/Tables/TableOne';
+import TableThree from '@/views/_boilerplate/Tables/TableThree';
+import TableTwo from '@/views/_boilerplate/Tables/TableTwo';
 import Breadcrumb from '@/views/Breadcrumbs/Breadcrumb';
-import TableOne from '@/views/Tables/TableOne';
-import TableThree from '@/views/Tables/TableThree';
-import TableTwo from '@/views/Tables/TableTwo';
 
 export const metadata: Metadata = {
   title: 'Tables Page | Next.js E-commerce Dashboard Template',

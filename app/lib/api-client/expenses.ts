@@ -21,12 +21,12 @@ export const createExpenses = async (expenses: Array<Expense>) => {
 
   return response.json();
 };
+
 export const getExpenses = async (params?: DatePickerUseFormProps) => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/expense${params ? `?${convertObjectToQueryString(params as keyof typeof DatePickerForm)}` : ''}`,
   );
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
+
+  const expenses = (await response.json()) as Expense[];
+  return expenses;
 };

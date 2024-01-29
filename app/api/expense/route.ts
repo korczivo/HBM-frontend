@@ -1,17 +1,16 @@
-import { initializeDatabase } from '@/app/lib/database';
-import { formatDate } from '@/app/lib/helpers';
+import type { NextRequest } from 'next/server';
 
-export async function GET(request: Request): Promise<Response> {
+import {
+  convertDateToTimestamp,
+  convertEuropeanDateToISOFormat,
+  getStartAndEndDateFromRequest,
+} from '@/app/api/lib/date';
+
+import { initializeDatabase } from '../lib/database';
+
+export async function GET(request: NextRequest): Promise<Response> {
   const db = await initializeDatabase();
-  const { searchParams } = new URL(request.url);
-
-  const startDate = searchParams.has('startDate')
-    ? formatDate(searchParams.get('startDate'))
-    : null;
-
-  const endDate = searchParams.has('endDate')
-    ? formatDate(searchParams.get('endDate'))
-    : null;
+  const { startDate, endDate } = getStartAndEndDateFromRequest(request);
 
   let query = 'SELECT * FROM expenses';
   const params = [];
@@ -45,11 +44,20 @@ export async function POST(req: Request) {
 
   try {
     for (const expense of expenses) {
-      const { postingDate, recipient, operationAmount, category } = expense;
+      const { postingDate, recipient, category } = expense;
+      let { operationAmount } = expense;
 
+      operationAmount = Math.abs(parseFloat(operationAmount.replace(',', '.')));
+
+      // eslint-disable-next-line no-await-in-loop
       await db.run(
         'INSERT INTO expenses (postingDate, recipient, operationAmount, category) VALUES (?, ?, ?, ?)',
-        [postingDate, recipient, operationAmount, category],
+        [
+          convertDateToTimestamp(convertEuropeanDateToISOFormat(postingDate)),
+          recipient,
+          operationAmount,
+          category,
+        ],
       );
     }
 

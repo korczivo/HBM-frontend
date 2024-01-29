@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
 
+import CheckboxFive from '@/views/_boilerplate/Checkboxes/CheckboxFive';
+import CheckboxFour from '@/views/_boilerplate/Checkboxes/CheckboxFour';
+import CheckboxOne from '@/views/_boilerplate/Checkboxes/CheckboxOne';
+import CheckboxThree from '@/views/_boilerplate/Checkboxes/CheckboxThree';
+import CheckboxTwo from '@/views/_boilerplate/Checkboxes/CheckboxTwo';
+import SwitcherFour from '@/views/_boilerplate/Switchers/SwitcherFour';
+import SwitcherOne from '@/views/_boilerplate/Switchers/SwitcherOne';
+import SwitcherThree from '@/views/_boilerplate/Switchers/SwitcherThree';
+import SwitcherTwo from '@/views/_boilerplate/Switchers/SwitcherTwo';
 import Breadcrumb from '@/views/Breadcrumbs/Breadcrumb';
-import CheckboxFive from '@/views/Checkboxes/CheckboxFive';
-import CheckboxFour from '@/views/Checkboxes/CheckboxFour';
-import CheckboxOne from '@/views/Checkboxes/CheckboxOne';
-import CheckboxThree from '@/views/Checkboxes/CheckboxThree';
-import CheckboxTwo from '@/views/Checkboxes/CheckboxTwo';
-import SwitcherFour from '@/views/Switchers/SwitcherFour';
-import SwitcherOne from '@/views/Switchers/SwitcherOne';
-import SwitcherThree from '@/views/Switchers/SwitcherThree';
-import SwitcherTwo from '@/views/Switchers/SwitcherTwo';
 
 export const metadata: Metadata = {
   title: 'Form Elements Page | Next.js E-commerce Dashboard Template',

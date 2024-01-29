@@ -1,56 +1,36 @@
-'use client';
-
+import { dehydrate, QueryClient } from '@tanstack/query-core';
+import { HydrationBoundary } from '@tanstack/react-query';
 import React from 'react';
-import { toast } from 'react-toastify';
-import useSWR from 'swr';
 
-import { CacheKeys } from '@/app/lib/api-client/cache';
 import { getExpenses } from '@/app/lib/api-client/expenses';
+import { CACHE_TIMES, CacheKeys } from '@/app/lib/cache';
 import Breadcrumb from '@/views/Breadcrumbs/Breadcrumb';
-import { Loader } from '@/views/common/Loader';
-import type { DatePickerUseFormProps } from '@/views/DatePickerForm/DatePickerForm';
 import { DatePickerForm } from '@/views/DatePickerForm/DatePickerForm';
 import { ExpensesTable } from '@/views/ExpensesTable';
-import { NoDataInfo } from '@/views/NoDataInfo/NoDataInfo';
 
-// TODO: define metadata
-// export const metadata = {
-//   title: 'Expenses - HMB',
-//   description: 'List of expenses',
-// };
+export const metadata = {
+  title: 'Expenses - HMB',
+  description: 'List of expenses',
+};
 
-const Expenses = () => {
-  const {
-    data: expenses,
-    error,
-    mutate,
-  } = useSWR(CacheKeys.GET_EXPENSES, () => getExpenses());
-
-  if (error) {
-    toast.error('Failed to load');
-    return null;
-  }
-  if (!expenses) return <Loader />;
-
-  const handleGetExpenses = async (period: DatePickerUseFormProps) => {
-    const filteredExpenses = await getExpenses(period);
-    await mutate(filteredExpenses, { revalidate: false });
-  };
+const Expenses = async () => {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: [CacheKeys.GET_EXPENSES],
+    queryFn: () => getExpenses(),
+    staleTime: CACHE_TIMES['5m'],
+  });
 
   return (
-    <>
+    <HydrationBoundary state={dehydrate(queryClient)}>
       <Breadcrumb pageName="Expenses" />
       <div className="mb-10 grid grid-cols-1 gap-9 sm:grid-cols-2">
         <div className="flex flex-col gap-9">
-          <DatePickerForm handleGetExpenses={handleGetExpenses} />
+          <DatePickerForm />
         </div>
       </div>
-      {expenses.length ? (
-        <ExpensesTable expenses={expenses} />
-      ) : (
-        <NoDataInfo title="No expenses." />
-      )}
-    </>
+      <ExpensesTable />
+    </HydrationBoundary>
   );
 };
 

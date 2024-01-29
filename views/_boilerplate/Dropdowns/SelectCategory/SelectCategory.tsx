@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useOutsideClick } from '@/hooks/useOutsideClick';
 import { SPEND_CATEGORIES, SpendCategory } from '@/types/expense';
-import type { SelectCategoryProps } from '@/views/Dropdowns/SelectCategory/types';
+import type { SelectCategoryProps } from '@/views/_boilerplate/Dropdowns/SelectCategory/types';
 
 export const SelectCategory = ({
   value,

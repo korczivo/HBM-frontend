@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import ECommerce from '@/views/Dashboard/E-commerce';
+import ECommerce from '@/views/_boilerplate/Dashboard/E-commerce';
 
 export const metadata: Metadata = {
   title: 'TailAdmin | Next.js E-commerce Dashboard Template',

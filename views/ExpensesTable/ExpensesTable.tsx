@@ -1,11 +1,30 @@
-import DefaultDropdown from '@/views/Dropdowns/DefaultDropdown/DefaultDropdown';
-import { SelectCategory } from '@/views/Dropdowns/SelectCategory';
+'use client';
+
+import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
+
+import { getExpenses } from '@/app/lib/api-client/expenses';
+import { CACHE_TIMES, CacheKeys } from '@/app/lib/cache';
+import DefaultDropdown from '@/views/_boilerplate/Dropdowns/DefaultDropdown/DefaultDropdown';
+import { SelectCategory } from '@/views/_boilerplate/Dropdowns/SelectCategory';
 import type { ExpensesTableProps } from '@/views/ExpensesTable/types';
 
-export const ExpensesTable = ({
-  expenses = [],
-  handleUpdateExpense,
-}: ExpensesTableProps) => {
+export const ExpensesTable = ({ handleUpdateExpense, expenses: initialExpenses }: ExpensesTableProps) => {
+  const searchParams = useSearchParams();
+  const startDate = searchParams.get('startDate');
+  const endDate = searchParams.get('endDate');
+
+  const { data: expenses } = useQuery({
+    queryKey: [CacheKeys.GET_EXPENSES, { startDate, endDate }],
+    queryFn: () =>
+      getExpenses(startDate && endDate ? { startDate, endDate } : undefined),
+    staleTime: CACHE_TIMES['5m'],
+    refetchInterval: false,
+    enabled: !initialExpenses?.length,
+  });
+
+  const expensesToRender = initialExpenses || expenses;
+
   return (
     <div className="col-span-12 xl:col-span-7">
       <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -42,10 +61,11 @@ export const ExpensesTable = ({
             </div>
           </div>
 
-          {expenses?.map((expense, key) => (
+          {expensesToRender?.map((expense, key) => (
             <div
               className={`grid grid-cols-3 sm:grid-cols-4 ${
-                key === expenses?.length - 1
+                // eslint-disable-next-line no-unsafe-optional-chaining
+                key === expensesToRender?.length - 1
                   ? ''
                   : 'border-b border-stroke dark:border-strokedark'
               }`}

@@ -1,16 +1,16 @@
 "use client";
 import React from "react";
-import ChartOne from "../Charts/ChartOne";
-import ChartThree from "../Charts/ChartThree";
-import ChartTwo from "../Charts/ChartTwo";
-import ChatCard from "../Chat/ChatCard";
-import TableOne from "../Tables/TableOne";
-import CardDataStats from "../CardDataStats";
+import ChartOne from "@/views/_boilerplate/Charts/ChartOne";
+import ChartThree from "@/views/_boilerplate/Charts/ChartThree";
+import ChartTwo from "@/views/_boilerplate/Charts/ChartTwo";
+import ChatCard from "@/views/_boilerplate/Chat/ChatCard";
+import TableOne from "@/views/_boilerplate/Tables/TableOne";
+import CardDataStats from "./CardDataStats";
 // import Map from "../Maps/TestMap";
 
 // without this the component renders on server and throws an error
 import dynamic from "next/dynamic";
-const MapOne = dynamic(() => import("../Maps/MapOne"), {
+const MapOne = dynamic(() => import("@/views/_boilerplate/Maps/MapOne"), {
   ssr: false,
 });
 

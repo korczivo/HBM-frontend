@@ -1,6 +1,6 @@
 import { BRAND } from "@/types/brand";
 import Image from "next/image";
-import DefaultDropdown from "@/views/Dropdowns/DefaultDropdown/DefaultDropdown";
+import DefaultDropdown from "@/views/_boilerplate/Dropdowns/DefaultDropdown/DefaultDropdown";
 
 const brandData: BRAND[] = [
   {
