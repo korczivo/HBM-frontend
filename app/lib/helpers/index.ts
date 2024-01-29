@@ -6,12 +6,25 @@ export function convertObjectToQueryString(
     .join('&');
 }
 
-export function formatDate(inputDate: string | null): string {
-  if (!inputDate) return '';
-  const parts = inputDate.split('-');
-  if (parts.length === 3) {
-    const [year, month, day] = parts;
-    return `${day}.${month}.${year}`;
-  }
-  return 'Invalid date format';
+export function getCurrentMonth(): {
+  currentYear: number;
+  currentMonth: string;
+  firstDay: string;
+  lastDay: string;
+} {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+  const firstDay = `${currentYear}-${currentMonth}-01`;
+
+  // To get the last day of the current month, you can set the date to 0 for the next month
+  const lastDayDate = new Date(currentYear, currentDate.getMonth() + 1, 0);
+  const lastDay = `${currentYear}-${currentMonth}-${String(lastDayDate.getDate()).padStart(2, '0')}`;
+
+  return {
+    currentYear,
+    currentMonth,
+    firstDay,
+    lastDay,
+  };
 }

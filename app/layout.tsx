@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 
+import { ReactQueryProvider } from '@/app/lib/cache/provider';
 import Header from '@/views/Header';
 import Sidebar from '@/views/Sidebar';
 
@@ -43,7 +44,7 @@ export default function RootLayout({
               <main>
                 <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
                   <ToastContainer position="bottom-center" autoClose={3000} />
-                  {children}
+                  <ReactQueryProvider>{children}</ReactQueryProvider>
                 </div>
               </main>
               {/* <!-- ===== Main Content End ===== --> */}

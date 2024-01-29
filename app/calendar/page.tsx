@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import Calendar from '@/views/Calender';
+import Calendar from '@/views/_boilerplate/Calender';
 
 export const metadata: Metadata = {
   title: 'Calendar Page | Next.js E-commerce Dashboard Template',

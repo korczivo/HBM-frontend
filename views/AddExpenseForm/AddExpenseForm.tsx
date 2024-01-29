@@ -1,15 +1,15 @@
 'use client';
 
 import { ErrorMessage } from '@hookform/error-message';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import type { ChangeEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { mutate } from 'swr';
 
-import { CacheKeys } from '@/app/lib/api-client/cache';
 import { createExpenses } from '@/app/lib/api-client/expenses';
+import { CacheKeys } from '@/app/lib/cache';
 import { convertCSVToJson } from '@/app/lib/csvConverter';
 import type { Expense } from '@/types/expense';
 import { SpendCategory } from '@/types/expense';
@@ -20,6 +20,7 @@ type FormProps = {
 };
 export const AddExpenseForm = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [expenses, setExpenses] = useState<Array<Expense>>([]);
   const [noCategoryExpenses, setNoCategoryExpenses] = useState<boolean>(false);
   const [isFormLoading, setIsFormLoading] = useState<boolean>(false);
@@ -71,7 +72,7 @@ export const AddExpenseForm = () => {
     try {
       const response = await createExpenses(expenses);
       if (response) {
-        await mutate(CacheKeys.GET_EXPENSES);
+        await queryClient.invalidateQueries({ queryKey: [CacheKeys.GET_EXPENSES] });
         router.push('/expenses');
         toast.success('Expenses saved successfully.');
       }

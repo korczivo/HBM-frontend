@@ -1,3 +1,13 @@
 node_modules
 out
 !.storybook
+// TODO: remove what is no needed
+views/_boilerplate
+app/auth
+app/calendar
+app/chart
+app/forms
+app/profile
+app/settings
+app/tables
+app/ui
