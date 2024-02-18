@@ -1,10 +1,10 @@
 import type { NextRequest } from 'next/server';
 
 import {
-  convertDateToTimestamp,
-  convertEuropeanDateToISOFormat,
-  getStartAndEndDateFromRequest,
+  convertEuropeanDateStringToTimestamp,
+  convertTimestampToEuropeanDateString,
 } from '@/app/api/lib/date';
+import { getStartAndEndDateFromRequest } from '@/app/api/lib/requestHelpers';
 
 import { initializeDatabase } from '../lib/database';
 
@@ -26,7 +26,12 @@ export async function GET(request: NextRequest): Promise<Response> {
     params.push(endDate);
   }
 
-  const expenses = await db.all(query, ...params);
+  let expenses = await db.all(query, ...params);
+
+  expenses = expenses.map((expense) => ({
+    ...expense,
+    postingDate: convertTimestampToEuropeanDateString(expense.postingDate),
+  }));
 
   return new Response(JSON.stringify(expenses), {
     status: 200,
@@ -53,7 +58,7 @@ export async function POST(req: Request) {
       await db.run(
         'INSERT INTO expenses (postingDate, recipient, operationAmount, category) VALUES (?, ?, ?, ?)',
         [
-          convertDateToTimestamp(convertEuropeanDateToISOFormat(postingDate)),
+          convertEuropeanDateStringToTimestamp(postingDate, '.'),
           recipient,
           operationAmount,
           category,
