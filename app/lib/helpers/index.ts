@@ -28,3 +28,15 @@ export function getCurrentMonth(): {
     lastDay,
   };
 }
+
+export function formatDateToDDMMYYYY(inputDateString: string): string {
+  const dateObject = new Date(inputDateString);
+
+  const year = dateObject.getFullYear();
+  let day = dateObject.getDate().toString();
+  day = day.length > 1 ? day : `0${day}`;
+  let month = (1 + dateObject.getMonth()).toString();
+  month = month.length > 1 ? month : `0${month}`;
+
+  return `${day}-${month}-${year}`;
+}

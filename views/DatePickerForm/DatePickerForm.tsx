@@ -4,6 +4,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { SubmitHandler } from 'react-hook-form';
 import { Controller, useForm } from 'react-hook-form';
 
+import { formatDateToDDMMYYYY } from '@/app/lib/helpers';
+
 export interface DatePickerUseFormProps {
   startDate: string;
   endDate: string;
@@ -24,11 +26,13 @@ export const DatePickerForm = () => {
   } = useForm<DatePickerUseFormProps>();
 
   const onSubmit: SubmitHandler<DatePickerUseFormProps> = async (data) => {
+    const formattedStartDate = formatDateToDDMMYYYY(data.startDate);
+    const formattedEndDate = formatDateToDDMMYYYY(data.endDate);
+
     router.push(
-      `${pathName}?startDate=${data.startDate}&endDate=${data.endDate}`,
+      `${pathName}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`,
     );
   };
-
   const onReset = () => {
     reset();
     router.push(pathName);

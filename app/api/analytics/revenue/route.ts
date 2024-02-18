@@ -1,5 +1,5 @@
-import { getStartAndEndDateFromRequest } from '@/app/api/lib/date';
 import { roundToNearestHalf } from '@/app/api/lib/helpers';
+import { getStartAndEndDateFromRequest } from '@/app/api/lib/requestHelpers';
 
 import { initializeDatabase } from '../../lib/database';
 
