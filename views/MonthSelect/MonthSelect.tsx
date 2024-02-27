@@ -1,60 +1,26 @@
 import type { ChangeEvent } from 'react';
-import React, { useState } from 'react';
-
-import { getCurrentMonth } from '@/app/lib/helpers';
+import React from 'react';
 
 interface IMonthSelectProps {
-  onMonthChange: (startDate: string, endDate: string) => void;
+  onMonthChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  selectedMonth: string;
+  monthEntries: Array<[string, { startDate: string; endDate: string }]>;
 }
-export const MonthSelect = ({ onMonthChange }: IMonthSelectProps) => {
-  const { currentYear, currentMonth } = getCurrentMonth();
-  const [selectedMonth, setSelectedMonth] = useState(
-    `${currentYear}-${currentMonth}`,
-  );
-
-  // Generate month options dynamically
-  const months = Array.from({ length: 12 }, (item, index) => {
-    const month = new Date(0, index).toLocaleString('default', {
-      month: 'long',
-    });
-    const year = new Date().getFullYear();
-    return {
-      label: `${month} ${year}`,
-      value: `${year}-${String(index + 1).padStart(2, '0')}`, // Format: "YYYY-MM"
-    };
-  });
-
-  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const { value } = e.target;
-    setSelectedMonth(value);
-
-    if (value) {
-      const [yearStr, monthStr] = value.split('-');
-      const year = parseInt(yearStr, 10);
-      const month = parseInt(monthStr, 10);
-
-      // Calculate the first day of the month
-      const startDate = new Date(year, month - 1, 1);
-      // Calculate the last day of the month
-      const endDate = new Date(year, month, 0);
-
-      // Format dates as "YYYY-MM-DD" without converting to UTC
-      const formatStartDate = `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${String(startDate.getDate()).padStart(2, '0')}`;
-      const formatEndDate = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')}`;
-
-      onMonthChange(formatStartDate, formatEndDate);
-    }
-  };
+export const MonthSelect = ({
+  onMonthChange,
+  selectedMonth,
+  monthEntries,
+}: IMonthSelectProps) => {
   return (
     <>
       <select
         value={selectedMonth}
-        onChange={handleSelectChange}
+        onChange={onMonthChange}
         className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
       >
-        {months.map((month) => (
-          <option key={month.value} value={month.value}>
-            {month.label}
+        {monthEntries.map(([monthName]) => (
+          <option key={monthName} value={monthName}>
+            {monthName}
           </option>
         ))}
       </select>

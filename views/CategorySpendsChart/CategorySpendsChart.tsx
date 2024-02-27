@@ -1,13 +1,19 @@
 'use client';
 
+import { useQuery } from '@tanstack/react-query';
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
-import React, { useMemo } from 'react';
+import React, { type ChangeEvent, useMemo, useState } from 'react';
 
-// import { toast } from 'react-toastify';
-// import { getCategorySpends } from '@/app/lib/api-client/analytics';
-// import { getCurrentMonth } from '@/app/lib/helpers';
+import { getCategorySpends } from '@/app/lib/api-client/analytics';
+import { CACHE_TIMES, CacheKeys } from '@/app/lib/cache';
+import {
+  formatDateToDDMMYYYY,
+  generateMonthMap,
+  getCurrentMonth,
+} from '@/app/lib/helpers';
 import { Loader } from '@/views/common/Loader';
+import { MonthSelect } from '@/views/MonthSelect/MonthSelect';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -25,10 +31,6 @@ interface ExpenseData {
   percentageOfTotal: string;
 }
 
-// interface CategorySpendsChartProps {
-//   expenses: Array<ExpenseData>;
-// }
-
 function parseToExpensesState(data: ExpenseData[]): CategorySpendsChartState {
   const series = data?.map((item) => item.totalAmount);
   const labels = data?.map((item) => item.category);
@@ -38,20 +40,39 @@ function parseToExpensesState(data: ExpenseData[]): CategorySpendsChartState {
 }
 
 export const CategorySpendsChart = () => {
-  // const { firstDay, lastDay } = getCurrentMonth();
+  const { currentMonthName } = getCurrentMonth();
+  const monthMap = generateMonthMap();
+  const monthEntries = Array.from(monthMap.entries());
 
-  // TODO: add RQ
-  const expenses: Array<ExpenseData> = [];
+  const [selectedCategorySpendsMonth, setSelectedCategorySpendsMonth] =
+    useState(currentMonthName);
+
+  const formattedStartDate = formatDateToDDMMYYYY(
+    monthMap.get(selectedCategorySpendsMonth)?.startDate ?? '',
+  );
+  const formattedEndDate = formatDateToDDMMYYYY(
+    monthMap.get(selectedCategorySpendsMonth)?.endDate ?? '',
+  );
+
+  const { data: expenses } = useQuery({
+    queryKey: [
+      CacheKeys.GET_ANALYTICS_CATEGORY_SPENDS,
+      { startDate: formattedStartDate, endDate: formattedEndDate },
+    ],
+    queryFn: () =>
+      getCategorySpends({
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      }),
+    staleTime: CACHE_TIMES['5m'],
+    refetchInterval: false,
+  });
 
   const memorizedExpenses = useMemo<CategorySpendsChartState>(
     () => parseToExpensesState(expenses),
     [expenses],
   );
 
-  // if (error) {
-  //   toast.error('Failed to load');
-  //   return null;
-  // }
   if (!expenses) return <Loader />;
 
   const colors = [
@@ -122,12 +143,9 @@ export const CategorySpendsChart = () => {
     ],
   };
 
-  // const handleMonthChange = async (startDate: string, endDate: string) => {
-  //   const filteredExpenses = await getCategorySpends({
-  //     startDate,
-  //     endDate,
-  //   });
-  // };
+  const handleMonthChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategorySpendsMonth(e.target.value);
+  };
 
   return (
     <div className="rounded-sm border border-stroke px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark sm:px-7.5">
@@ -139,7 +157,11 @@ export const CategorySpendsChart = () => {
         </div>
         <div>
           <div className="relative z-20 inline-block">
-            {/* <MonthSelect onMonthChange={handleMonthChange} /> */}
+            <MonthSelect
+              onMonthChange={handleMonthChange}
+              selectedMonth={selectedCategorySpendsMonth}
+              monthEntries={monthEntries}
+            />
           </div>
         </div>
       </div>
