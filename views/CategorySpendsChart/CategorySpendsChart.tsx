@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
-import React, { type ChangeEvent, useMemo, useState } from 'react';
+import React, { type ChangeEvent, useEffect, useMemo, useState } from 'react';
 
 import { getCategorySpends } from '@/app/lib/api-client/analytics';
 import { CACHE_TIMES, CacheKeys } from '@/app/lib/cache';
@@ -167,13 +167,17 @@ export const CategorySpendsChart = () => {
       </div>
 
       <div className="mb-2">
-        <div id="chartThree" className="mx-auto flex justify-center">
-          <ReactApexChart
-            options={options}
-            series={memorizedExpenses.series}
-            type="donut"
-          />
-        </div>
+        {expenses.length ? (
+          <div id="chartThree" className="mx-auto flex justify-center">
+            <ReactApexChart
+              options={options}
+              series={memorizedExpenses.series}
+              type="donut"
+            />
+          </div>
+        ) : (
+          <div>There is no expenses yet.</div>
+        )}
       </div>
 
       <div className="-mx-8 flex flex-wrap items-center gap-y-3">

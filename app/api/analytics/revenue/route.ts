@@ -1,4 +1,3 @@
-import { roundToNearestHalf } from '@/app/api/lib/helpers';
 import { getStartAndEndDateFromRequest } from '@/app/api/lib/requestHelpers';
 
 import { initializeDatabase } from '../../lib/database';
@@ -30,14 +29,7 @@ export async function GET(request: Request): Promise<Response> {
 
   const totalSum = expenses.reduce((acc, curr) => acc + curr.totalAmount, 0);
 
-  const expensesWithPercentage = expenses.map((expense) => ({
-    ...expense,
-    percentageOfTotal: `${roundToNearestHalf(
-      (expense.totalAmount / totalSum) * 100,
-    ).toFixed(1)}%`,
-  }));
-
-  return new Response(JSON.stringify(expensesWithPercentage), {
+  return new Response(JSON.stringify({ totalSum }), {
     status: 200,
     headers: {
       'Content-Type': 'application/json',

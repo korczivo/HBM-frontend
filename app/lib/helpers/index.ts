@@ -90,6 +90,32 @@ export function generateMonthMap(): Map<
 
   return monthMap;
 }
+
+export function generateYearMap() {
+  const years = [
+    '2020',
+    '2021',
+    '2022',
+    '2023',
+    '2024',
+    '2025',
+    '2026',
+    '2027',
+    '2028',
+    '2029',
+    '2030',
+  ];
+  const yearsMap = new Map<string, { startDate: string; endDate: string }>();
+
+  years.forEach((year) => {
+    const startDate = `01-01-${year}`;
+    const endDate = `31-12-${year}`;
+    yearsMap.set(year, { startDate, endDate });
+  });
+
+  return yearsMap;
+}
+
 export function formatDateToDDMMYYYY(inputDateString: string): string {
   const dateObject = new Date(inputDateString);
 
