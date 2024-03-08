@@ -19,5 +19,11 @@ export async function initializeDatabase() {
       category TEXT
     )
   `);
+  await db.exec(`   CREATE TABLE IF NOT EXISTS salary (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        month TEXT,
+        year TEXT,
+        salaryAmount TEXT
+        )`);
   return db;
 }

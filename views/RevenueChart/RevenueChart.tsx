@@ -1,8 +1,14 @@
 'use client';
 
+import { useQuery } from '@tanstack/react-query';
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
-import React, { useState } from 'react';
+import React, { type ChangeEvent, useState } from 'react';
+
+import { getRevenue } from '@/app/lib/api-client/analytics';
+import { CACHE_TIMES, CacheKeys } from '@/app/lib/cache';
+import { generateYearMap, getCurrentMonth } from '@/app/lib/helpers';
+import { EntrySelect } from '@/views/MonthSelect/EntrySelect';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -133,16 +139,33 @@ interface ChartOneState {
 }
 
 export const RevenueChart = () => {
+  const { currentYear } = getCurrentMonth();
+  const yearsMap = generateYearMap();
+  const yearsEntries = Array.from(yearsMap.entries());
+  const [selectedYearRevenue, setSelectedYearRevenue] =
+    useState(currentYear.toString());
+
+  const handleMonthChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedYearRevenue(e.target.value);
+  };
+
+  const { data: expenses } = useQuery({
+    queryKey: [CacheKeys.GET_ANALYTICS_REVENUE, selectedYearRevenue],
+    queryFn: () => getRevenue(selectedYearRevenue),
+    staleTime: CACHE_TIMES['5m'],
+    refetchInterval: false,
+  });
+
   const [state, setState] = useState<ChartOneState>({
     series: [
       {
         name: 'Salary',
-        data: [18000, 18000, 18000],
+        data: [18000, 18000, 18000, 0, 0, 0, 0, 0, 0, 0, 0],
       },
 
       {
         name: 'Expenses',
-        data: [9452, 10521, 8500],
+        data: [9452, 10521, 8500, 0, 0, 0, 0, 0, 0, 0, 0],
       },
     ],
   });
@@ -154,11 +177,13 @@ export const RevenueChart = () => {
   // };
   //
   // handleReset;
-  //
-  // // NextJS Requirement
-  // const isWindowAvailable = () => typeof window !== 'undefined';
-  //
-  // if (!isWindowAvailable()) return null;
+
+  // NextJS Requirement
+  const isWindowAvailable = () => typeof window !== 'undefined';
+
+  if (!isWindowAvailable()) return null;
+
+  console.log(expenses);
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8 xl:min-h-[550px]">
@@ -179,6 +204,15 @@ export const RevenueChart = () => {
             <div className="w-full">
               <p className="font-semibold text-secondary">Total Sales</p>
             </div>
+          </div>
+        </div>
+        <div>
+          <div className="relative z-20 inline-block">
+            <EntrySelect
+              onEntryChange={handleMonthChange}
+              selectedEntry={selectedYearRevenue}
+              entries={yearsEntries}
+            />
           </div>
         </div>
       </div>

@@ -2,23 +2,23 @@ import type { ChangeEvent } from 'react';
 import React from 'react';
 
 interface IMonthSelectProps {
-  onMonthChange: (e: ChangeEvent<HTMLSelectElement>) => void;
-  selectedMonth: string;
-  monthEntries: Array<[string, { startDate: string; endDate: string }]>;
+  onEntryChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  selectedEntry: string;
+  entries: Array<[string, { startDate: string; endDate: string }]>;
 }
-export const MonthSelect = ({
-  onMonthChange,
-  selectedMonth,
-  monthEntries,
+export const EntrySelect = ({
+  onEntryChange,
+  selectedEntry,
+  entries,
 }: IMonthSelectProps) => {
   return (
     <>
       <select
-        value={selectedMonth}
-        onChange={onMonthChange}
+        value={selectedEntry}
+        onChange={onEntryChange}
         className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
       >
-        {monthEntries.map(([monthName]) => (
+        {entries.map(([monthName]) => (
           <option key={monthName} value={monthName}>
             {monthName}
           </option>

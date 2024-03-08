@@ -13,7 +13,7 @@ import {
   getCurrentMonth,
 } from '@/app/lib/helpers';
 import { Loader } from '@/views/common/Loader';
-import { MonthSelect } from '@/views/MonthSelect/MonthSelect';
+import { EntrySelect } from '@/views/MonthSelect/EntrySelect';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -157,23 +157,27 @@ export const CategorySpendsChart = () => {
         </div>
         <div>
           <div className="relative z-20 inline-block">
-            <MonthSelect
-              onMonthChange={handleMonthChange}
-              selectedMonth={selectedCategorySpendsMonth}
-              monthEntries={monthEntries}
+            <EntrySelect
+              onEntryChange={handleMonthChange}
+              selectedEntry={selectedCategorySpendsMonth}
+              entries={monthEntries}
             />
           </div>
         </div>
       </div>
 
       <div className="mb-2">
-        <div id="chartThree" className="mx-auto flex justify-center">
-          <ReactApexChart
-            options={options}
-            series={memorizedExpenses.series}
-            type="donut"
-          />
-        </div>
+        {expenses.length ? (
+          <div id="chartThree" className="mx-auto flex justify-center">
+            <ReactApexChart
+              options={options}
+              series={memorizedExpenses.series}
+              type="donut"
+            />
+          </div>
+        ) : (
+          <div>There is no expenses yet.</div>
+        )}
       </div>
 
       <div className="-mx-8 flex flex-wrap items-center gap-y-3">
