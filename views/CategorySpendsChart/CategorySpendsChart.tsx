@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import type { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
-import React, { type ChangeEvent, useEffect, useMemo, useState } from 'react';
+import React, { type ChangeEvent, useMemo, useState } from 'react';
 
 import { getCategorySpends } from '@/app/lib/api-client/analytics';
 import { CACHE_TIMES, CacheKeys } from '@/app/lib/cache';
@@ -13,7 +13,7 @@ import {
   getCurrentMonth,
 } from '@/app/lib/helpers';
 import { Loader } from '@/views/common/Loader';
-import { MonthSelect } from '@/views/MonthSelect/MonthSelect';
+import { EntrySelect } from '@/views/MonthSelect/EntrySelect';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -157,10 +157,10 @@ export const CategorySpendsChart = () => {
         </div>
         <div>
           <div className="relative z-20 inline-block">
-            <MonthSelect
-              onMonthChange={handleMonthChange}
-              selectedMonth={selectedCategorySpendsMonth}
-              monthEntries={monthEntries}
+            <EntrySelect
+              onEntryChange={handleMonthChange}
+              selectedEntry={selectedCategorySpendsMonth}
+              entries={monthEntries}
             />
           </div>
         </div>

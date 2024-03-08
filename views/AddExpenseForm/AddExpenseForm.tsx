@@ -11,8 +11,7 @@ import { toast } from 'react-toastify';
 import { createExpenses } from '@/app/lib/api-client/expenses';
 import { CacheKeys } from '@/app/lib/cache';
 import { convertCSVToJson } from '@/app/lib/csvConverter';
-import type { Expense } from '@/types/expense';
-import { SpendCategory } from '@/types/expense';
+import { type Expense, SpendCategory } from '@/types/expense';
 import { ExpensesTable } from '@/views/ExpensesTable';
 
 type FormProps = {
@@ -72,7 +71,9 @@ export const AddExpenseForm = () => {
     try {
       const response = await createExpenses(expenses);
       if (response) {
-        await queryClient.invalidateQueries({ queryKey: [CacheKeys.GET_EXPENSES] });
+        await queryClient.invalidateQueries({
+          queryKey: [CacheKeys.GET_EXPENSES],
+        });
         router.push('/expenses');
         toast.success('Expenses saved successfully.');
       }

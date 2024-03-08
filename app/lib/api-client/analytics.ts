@@ -19,10 +19,10 @@ export const getCategorySpends = async (params?: DatePickerUseFormProps) => {
   }
 };
 
-export const getRevenue = async (params?: DatePickerUseFormProps) => {
+export const getRevenue = async (selectedYear: string) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/analytics/revenue${params ? `?${convertObjectToQueryString(params as keyof typeof DatePickerForm)}` : ''}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/analytics/revenue?selectedYear=${selectedYear}`,
     );
     if (!response.ok) {
       throw new Error('Network response was not ok');

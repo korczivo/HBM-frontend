@@ -1,0 +1,1 @@
+export { AddSalaryForm } from './AddSalaryForm';

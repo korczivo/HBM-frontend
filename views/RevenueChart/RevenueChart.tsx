@@ -8,7 +8,7 @@ import React, { type ChangeEvent, useState } from 'react';
 import { getRevenue } from '@/app/lib/api-client/analytics';
 import { CACHE_TIMES, CacheKeys } from '@/app/lib/cache';
 import { generateYearMap, getCurrentMonth } from '@/app/lib/helpers';
-import { MonthSelect } from '@/views/MonthSelect/MonthSelect';
+import { EntrySelect } from '@/views/MonthSelect/EntrySelect';
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -142,24 +142,16 @@ export const RevenueChart = () => {
   const { currentYear } = getCurrentMonth();
   const yearsMap = generateYearMap();
   const yearsEntries = Array.from(yearsMap.entries());
-  const [selectedCategorySpendsMonth, setSelectedCategorySpendsMonth] =
+  const [selectedYearRevenue, setSelectedYearRevenue] =
     useState(currentYear.toString());
 
-  const formattedStartDate =
-    yearsMap.get(selectedCategorySpendsMonth)?.startDate ?? '';
-  const formattedEndDate =
-    yearsMap.get(selectedCategorySpendsMonth)?.endDate ?? '';
   const handleMonthChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategorySpendsMonth(e.target.value);
+    setSelectedYearRevenue(e.target.value);
   };
 
   const { data: expenses } = useQuery({
-    queryKey: [
-      CacheKeys.GET_ANALYTICS_REVENUE,
-      { startDate: formattedStartDate, endDate: formattedEndDate },
-    ],
-    queryFn: () =>
-      getRevenue({ startDate: formattedStartDate, endDate: formattedEndDate }),
+    queryKey: [CacheKeys.GET_ANALYTICS_REVENUE, selectedYearRevenue],
+    queryFn: () => getRevenue(selectedYearRevenue),
     staleTime: CACHE_TIMES['5m'],
     refetchInterval: false,
   });
@@ -168,12 +160,12 @@ export const RevenueChart = () => {
     series: [
       {
         name: 'Salary',
-        data: [18000, 18000, 18000],
+        data: [18000, 18000, 18000, 0, 0, 0, 0, 0, 0, 0, 0],
       },
 
       {
         name: 'Expenses',
-        data: [9452, 10521, 8500],
+        data: [9452, 10521, 8500, 0, 0, 0, 0, 0, 0, 0, 0],
       },
     ],
   });
@@ -216,10 +208,10 @@ export const RevenueChart = () => {
         </div>
         <div>
           <div className="relative z-20 inline-block">
-            <MonthSelect
-              onMonthChange={handleMonthChange}
-              selectedMonth={selectedCategorySpendsMonth}
-              monthEntries={yearsEntries}
+            <EntrySelect
+              onEntryChange={handleMonthChange}
+              selectedEntry={selectedYearRevenue}
+              entries={yearsEntries}
             />
           </div>
         </div>

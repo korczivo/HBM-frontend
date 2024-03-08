@@ -20,7 +20,7 @@ const Analytics = async () => {
     startDate: formatDateToDDMMYYYY(firstDayOfCurrentMonth),
     endDate: formatDateToDDMMYYYY(lastDayOfCurrentMonth),
   };
-  const currentYearObj = {
+  const currentYearDateRange = {
     startDate: `01-01-${currentYear}`,
     endDate: `31-12-${currentYear}`,
   };
@@ -31,8 +31,8 @@ const Analytics = async () => {
     staleTime: CACHE_TIMES['5m'],
   });
   await queryClient.prefetchQuery({
-    queryKey: [CacheKeys.GET_ANALYTICS_REVENUE, currentYearObj],
-    queryFn: () => getRevenue(currentYearObj),
+    queryKey: [CacheKeys.GET_ANALYTICS_REVENUE, currentYearDateRange],
+    queryFn: () => getRevenue(currentYearDateRange),
     staleTime: CACHE_TIMES['5m'],
   });
 
